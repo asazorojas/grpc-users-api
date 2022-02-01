@@ -1,0 +1,12 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.cornershopapp</groupId>
+    <artifactId>grpc-users-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>grpc-users-parent</name>
+    <modules>
+        <module>grpc-users-common</module>
+        <module>grpc-users-service</module>
+    </modules>
+</project>
