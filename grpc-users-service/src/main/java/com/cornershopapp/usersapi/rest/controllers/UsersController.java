@@ -1,11 +1,11 @@
 package com.cornershopapp.usersapi.rest.controllers;
 
-import com.cornershopapp.usersapi.grpc.GetUserResponse;
 import com.cornershopapp.usersapi.rest.response.ApiResponse;
 import com.cornershopapp.usersapi.rest.response.UserResponse;
 import com.cornershopapp.usersapi.service.dto.UserRequestDTO;
 import com.cornershopapp.usersapi.service.UserService;
 import com.cornershopapp.usersapi.service.dto.UserResponseDTO;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +38,17 @@ public class UsersController {
         return ResponseEntity.ok(
                 ApiResponse.<UserResponse>builder()
                         .data(userResponse)
+                        .build()
+        );
+    }
+
+    @GetMapping(value = "/users")
+    public ResponseEntity<ApiResponse<?>> getUserById() {
+        // Just for the sake of the demo we're exposing this DTO from the service layer to the presentation layer
+        List<UserResponseDTO> users = userService.getUsers();
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .data(users)
                         .build()
         );
     }
