@@ -1,11 +1,12 @@
 package com.cornershopapp.usersapi.rest.controllers;
 
 import com.cornershopapp.usersapi.rest.response.ApiResponse;
+import com.cornershopapp.usersapi.rest.response.ListUsersResponse;
 import com.cornershopapp.usersapi.rest.response.UserResponse;
+import com.cornershopapp.usersapi.service.dto.ListUsersResponseDTO;
 import com.cornershopapp.usersapi.service.dto.UserRequestDTO;
 import com.cornershopapp.usersapi.service.UserService;
 import com.cornershopapp.usersapi.service.dto.UserResponseDTO;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsersController {
     private final UserService userService;
     private final Converter<UserResponseDTO, UserResponse> userResponseDTOToUserResponseConverter;
+    private final Converter<ListUsersResponseDTO, ListUsersResponse> listUsersResponseDTOToListUsersResponseConverter;
 
     @Autowired
-    public UsersController(UserService userService, Converter<UserResponseDTO, UserResponse> userResponseDTOToUserResponseConverter) {
+    public UsersController(
+            UserService userService,
+            Converter<UserResponseDTO, UserResponse> userResponseDTOToUserResponseConverter,
+            Converter<ListUsersResponseDTO, ListUsersResponse> listUsersResponseDTOToListUsersResponseConverter
+    ) {
         this.userService = userService;
         this.userResponseDTOToUserResponseConverter = userResponseDTOToUserResponseConverter;
+        this.listUsersResponseDTOToListUsersResponseConverter = listUsersResponseDTOToListUsersResponseConverter;
     }
 
     @GetMapping(value = "/users/{userId}")
@@ -43,12 +50,14 @@ public class UsersController {
     }
 
     @GetMapping(value = "/users")
-    public ResponseEntity<ApiResponse<?>> getUserById() {
-        // Just for the sake of the demo we're exposing this DTO from the service layer to the presentation layer
-        List<UserResponseDTO> users = userService.getUsers();
+    public ResponseEntity<ApiResponse<ListUsersResponse>> getUserById() {
+        var users = userService.getUsers();
+        ListUsersResponse convert = this.listUsersResponseDTOToListUsersResponseConverter.convert(users);
         return ResponseEntity.ok(
-                ApiResponse.builder()
-                        .data(users)
+                ApiResponse.<ListUsersResponse>builder()
+                        .data(
+                                convert
+                        )
                         .build()
         );
     }
